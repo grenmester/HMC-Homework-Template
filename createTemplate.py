@@ -1,70 +1,7 @@
-# Jacky Lee         December 2016
-# Eyassu Shimelis   September 2016
+# Modified by Jacky Lee,        December 2016
+# Created by Eyassu Shimelis,   September 2016
 
-import time
-import os
-
-packages = \
-'''\documentclass[11pt,letterpaper,boxed]{hmcpset}
-\usepackage[margin=1in]{geometry}
-\usepackage{graphicx, enumerate, amsmath, mathtools, amssymb, cancel, mathrsfs, fancyhdr, lastpage, extramarks, amsfonts, tabularx, gensymb}
-\usepackage[breakable,skins]{tcolorbox} % yellowness
-
-\setlength{\parskip}{6pt}
-\setlength{\parindent}{0pt}
-
-% Margins
-\\topmargin=-0.45in
-\\evensidemargin=0in
-\\oddsidemargin=0in
-\\textwidth=6.5in
-\\textheight=9.0in
-\headsep=0.25in
-
-\\linespread{1.1} % Line spacing
-
-% Set up the header and footer
-\pagestyle{fancy}
-\lhead{\hmwkAuthorName} % Top left header
-\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle} % Top center header
-\chead{\hmwkClass: \hmwkTitle} % Top center header
-\\rhead{\\firstxmark\ \hmwkDueDate} % Top right header
-\lfoot{\lastxmark} % Bottom left footer
-\cfoot{} % Bottom center footer
-\\rfoot{Page\ \\thepage\ of\ \pageref{LastPage}} % Bottom right footer
-\\renewcommand\headrulewidth{0.4pt} % Size of the header rule
-\\renewcommand\\footrulewidth{0.4pt} % Size of the footer rule
-\\newcommand{\ind}{\hspace{4em}}
-'''
-
-begin = \
-'''
-\\begin{document} {
-\\vspace{-1.5cm}
-\\begin{flushleft}
-Collaborators:
-\end{flushleft}
-'''
-
-problem = \
-'''
-%------------------------- Problem {0} -----------------------
-
-\\begin{{problem}}[{0}]
-% Problem goes here...
-\end{{problem}}
-
-\\begin{{solution}}
-% Solution goes here...
-\end{{solution}}
-
-\\newpage
-'''
-
-end = \
-'''
-\\end{document}
-'''
+import time, os
 
 hmcpset = \
 '''
@@ -228,19 +165,69 @@ hmcpset = \
 
 '''
 
-# TODO: autodetect hmcpset.cls
-# TODO: try-except for raw_input
+begin = \
+'''\\documentclass[11pt,letterpaper,boxed]{{hmcpset}}
+\\usepackage[margin=1in,headheight=14pt]{{geometry}}
+\\usepackage{{amsfonts, amsmath, amssymb, enumerate, fancyhdr, gensymb, lastpage, mathtools}}
+
+\\pagestyle{{fancy}}
+\\lhead{{{0}}}
+\\chead{{{1}}}
+\\rhead{{{3}}}
+\\lfoot{{}}
+\\cfoot{{}}
+\\rfoot{{Page\\ \\thepage\\ of\\ \\pageref{{LastPage}}}}
+
+\\linespread{{1.1}}
+
+\\newcommand\\blankpage{{
+    \\thispagestyle{{empty}}
+    \\addtocounter{{page}}{{-1}}
+    \\newpage}}
+\\renewcommand\\footrulewidth{{0.4pt}}
+
+\\begin{{document}}
+\\begin{{center}}
+    \\problemlist{{{1}: HW {2}}}
+\\end{{center}}
+'''
+
+problem = \
+'''
+%------------------------- Problem {0} -----------------------
+
+\\begin{{problem}}[{0}]
+    \\hfill
+\\end{{problem}}
+
+\\begin{{solution}}
+    \\vfill
+\\end{{solution}}
+
+\\newpage
+'''
+
+end = \
+'''
+\\end{document}
+'''
 
 def main():
     print('Hi there, ready to start an assignment?')
-    time.sleep(.5)
+    time.sleep(.3)
 
     # query inputs
     name = raw_input('Name: ')
     course = raw_input('Course: ')
     assignmentNum = raw_input('Assignment Number: ')
     dueDate = raw_input('Due Date: ')
-    numProblems = int(raw_input('Number of Problems: '))
+    while True:
+        try:
+            numProblems = int(raw_input('Number of Problems: '))
+            break
+        except ValueError:
+            print('Please enter a valid number of problems')
+    fileName = 'hw{0}.tex'.format(assignmentNum)
 
     # ask to add hmcpset.cls if not found
     if not os.path.exists('hmcpset.cls'):
@@ -249,47 +236,23 @@ def main():
             with open('hmcpset.cls','w') as psetFile:
                 psetFile.write(hmcpset)
 
-    fileName = 'hw{}.tex'.format(assignmentNum)
-
+    # checks whether file already exists
     overwrite = 'y'
     if os.path.exists(fileName):
         overwite = raw_input('WARNING: This file already exists in the current directory \nOverwrite it? [y/n] ')
 
+    # create template file
     if overwrite in ['Y','y','Yes','yes']:
         with open(fileName,'w') as templateFile:
-            # create template file
-            header = createHeader(name, course, assignmentNum, dueDate)
-            templateFile.write(packages + header)
-            templateFile.write(begin)
+            templateFile.write(begin.format(name, course, assignmentNum, dueDate))
             for i in range(numProblems):
                 templateFile.write(problem.format(i+1))
             templateFile.write(end)
 
+            print("All done, opening your assignment!")
             os.system("open " + templateFile.name)
-            print("All done, opening your assignment!\n")
     else:
         print('Aborting...')
-        return
-
-# Creates and returns a header with information provided by user
-def createHeader(name, className, assignmentNumber, dueDate):
-
-    remainingHeader = '''
-%----------------------------------------------------------------------------------------
-%	NAME AND CLASS SECTION
-%----------------------------------------------------------------------------------------
-\\newcommand{\hmwkTitle}{Assignment\ ''' + assignmentNumber + ''' } % Assignment title
-\\newcommand{\hmwkDueDate}{''' + dueDate + '''} % Due date
-\\newcommand{\hmwkClass}{''' + className + '''} % Course/class
-\\newcommand{\hmwkAuthorName}{''' + name + '''} % Your name
-\usepackage{afterpage}
-\\newcommand{\half}{\\tfrac{1}{2}}
-\\newcommand\\blankpage{%
-    \\thispagestyle{empty}%
-    \\addtocounter{page}{-1}%
-    \\newpage}
-'''
-    return remainingHeader
 
 if __name__ == "__main__":
     main()
