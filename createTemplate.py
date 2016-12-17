@@ -1,13 +1,11 @@
-# createTemplate.py
-# Author: Eyassu Shimelis
-# Date: Sept. 4, 2016
-#
-# Automated creation of blank homework TeX files.
+# Jacky Lee         December 2016
+# Eyassu Shimelis   September 2016
 
 import time
 import os
 
-packages = """\documentclass[11pt,letterpaper,boxed]{../../hmcpset}
+packages = \
+"""\documentclass[11pt,letterpaper,boxed]{hmcpset}
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx, enumerate, amsmath, mathtools, amssymb, cancel, mathrsfs, fancyhdr, lastpage, extramarks, amsfonts, tabularx, gensymb}
 \usepackage[breakable,skins]{tcolorbox} % yellowness
@@ -39,88 +37,76 @@ packages = """\documentclass[11pt,letterpaper,boxed]{../../hmcpset}
 \\newcommand{\ind}{\hspace{4em}}
 """
 
-
-
-def main():
-
-    finished = False
-
-    while not finished:
-        print "\nHi there, ready to start an assignment?"
-        time.sleep(.5)
-
-        # Get file information
-        name = raw_input("Your name: ")
-        className = raw_input("Course name: ")
-        assignmentNumber = raw_input("Assignment number: ")
-        dueDate = raw_input("Due date (any format you prefer): ")
-        numberProblems = raw_input("Number of problems: ")
-        createHMCpset = raw_input("Create HMCpset.cls (Y/N): ")
-
-        filename = className.replace(" ", "") + "Assignment" + assignmentNumber + ".tex"
-
-        overwrite = "pending"
-
-        # Check if file already exists
-        if os.path.exists(filename):
-            overwrite = raw_input("\nWARNING: This file already exists in this directory, \nwould you like to overwrite it? (Y/N): ")
-
-
-        if (overwrite != 'N' and overwrite != 'n'):
-
-            # Create, open template file, and add header
-            templateFile = open(filename, "w")
-            header = createHeader(name, className, assignmentNumber, dueDate)
-            templateFile.write(packages + header)
-
-            # Start document
-            templateFile.write("""
+begin = \
+"""
 \\begin{document} {
 \\vspace{-1.5cm}
 \\begin{flushleft}
 Collaborators:
-\end{flushleft}""")
+\end{flushleft}
+"""
 
-            # Add problems
-            for i in range(int(numberProblems)):
-                templateFile.write("""
+problem = \
+"""
+%------------------------- Problem {0} -----------------------
 
-%------------------------- Problem """ + str(i+1) + """ -----------------------
-
-\\begin{problem}[""" + str(i+1) + """]
+\\begin{{problem}}[{0}]
 % Problem goes here...
-\end{problem}
+\end{{problem}}
 
-
-\\begin{solution}
+\\begin{{solution}}
 % Solution goes here...
-\end{solution}
+\end{{solution}}
 
 \\newpage
+"""
 
-        """)
+end = \
+"""
+\\end{document}
+"""
 
-            # End document
-            templateFile.write("""
-        \\end{document}""")
+def main():
+    print('Hi there, ready to start an assignment?')
+    time.sleep(.5)
 
-            # Close template file
-            templateFile.close();
+    name = raw_input('Name: ')
+    course = raw_input('Course: ')
+    assignmentNum = raw_input('Assignment Number: ')
+    dueDate = raw_input('Due Date: ')
+    numProblems = int(raw_input('Number of Problems: '))
+    createHMCpset = raw_input('Create hmcpset.cls [y/n]: ')
 
-            # Open completed file.
+    fileName = 'hw{}.tex'.format(assignmentNum)
+    overwrite = 'y'
+
+    if os.path.exists(fileName):
+        overwrite = raw_input('WARNING: This file already exists in this directory, \nwould you like to overwrite it? [y/n] ')
+
+    if overwrite in ['Y','y','Yes','yes']:
+        with open(fileName,'w') as templateFile:
+            header = createHeader(name, course, assignmentNum, dueDate)
+            templateFile.write(packages + header)
+            templateFile.write(begin)
+
+            for i in range(numProblems):
+                templateFile.write(problem.format(i+1))
+
+            templateFile.write(end)
+
             os.system("open " + templateFile.name)
 
             HMCpset(createHMCpset)
 
-            print "All done, opening your assignment!\n"
-            finished = True
-
+            print("All done, opening your assignment!\n")
+    else:
+        print('Aborting...')
+        return
 
 # Creates and returns a header with information provided by user
 def createHeader(name, className, assignmentNumber, dueDate):
 
     remainingHeader = """
-
 %----------------------------------------------------------------------------------------
 %	NAME AND CLASS SECTION
 %----------------------------------------------------------------------------------------
@@ -134,10 +120,7 @@ def createHeader(name, className, assignmentNumber, dueDate):
     \\thispagestyle{empty}%
     \\addtocounter{page}{-1}%
     \\newpage}
-
-
-    """
-
+"""
     return remainingHeader
 
 
@@ -146,7 +129,8 @@ def HMCpset(createFile):
 
     if createFile == 'Y' or createFile == 'y':
         psetFile = open("hmcpset.cls", "w")
-        psetFile.write("""
+        psetFile.write(
+"""
 % HMC Math dept HW class file
 % v0.04 by Eric J. Malm, 10 Mar 2005
 %%% IDENTIFICATION --------------------------------------------------------
@@ -305,10 +289,8 @@ def HMCpset(createFile):
 \\newcommand{\duedate}[1]{\def\hmcpset@duedate{#1}}
 \\newcommand{\extraline}[1]{\def\hmcpset@extraline{#1}}
 
-        """)
-
+""")
         psetFile.close
 
-# Automatically start main function
 if __name__ == "__main__":
     main()
