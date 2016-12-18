@@ -1,6 +1,7 @@
 # Modified by Jacky Lee,        December 2016
 # Created by Eyassu Shimelis,   September 2016
 
+from builtins import input
 import time, os
 
 hmcpset = \
@@ -217,13 +218,13 @@ def main():
     time.sleep(.3)
 
     # query inputs
-    name = raw_input('Name: ')
-    course = raw_input('Course: ')
-    assignmentNum = raw_input('Assignment Number: ')
-    dueDate = raw_input('Due Date: ')
+    name = input('Name: ')
+    course = input('Course: ')
+    assignmentNum = input('Assignment Number: ')
+    dueDate = input('Due Date: ')
     while True:
         try:
-            numProblems = int(raw_input('Number of Problems: '))
+            numProblems = int(input('Number of Problems: '))
             break
         except ValueError:
             print('Please enter a valid number of problems')
@@ -231,7 +232,7 @@ def main():
 
     # ask to add hmcpset.cls if not found
     if not os.path.exists('hmcpset.cls'):
-        createPset = raw_input('Your current directory does not contain the required hmcpset.cls \nCreate hmcpset.cls? [y/n]: ')
+        createPset = input('Your current directory does not contain the required hmcpset.cls \nCreate hmcpset.cls? [y/n]: ')
         if createPset in ['Y','y','Yes','yes']:
             with open('hmcpset.cls','w') as psetFile:
                 psetFile.write(hmcpset)
@@ -239,7 +240,7 @@ def main():
     # checks whether file already exists
     overwrite = 'y'
     if os.path.exists(fileName):
-        overwite = raw_input('WARNING: This file already exists in the current directory \nOverwrite it? [y/n] ')
+        overwite = input('WARNING: This file already exists in the current directory \nOverwrite it? [y/n] ')
 
     # create template file
     if overwrite in ['Y','y','Yes','yes']:
