@@ -1,6 +1,3 @@
-# Modified by Jacky Lee,        December 2016
-# Created by Eyassu Shimelis,   September 2016
-
 from builtins import input
 import time, os
 

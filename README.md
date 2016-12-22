@@ -19,3 +19,7 @@ Nothing additional needs to be done for Python 3. Simply run the following comma
 ```{bash}
 python3 createTemplate.py
 ```
+
+## Credits
+This script was created originally by [Eyassu Shimelis](https://github.com/eshimelis).
+
