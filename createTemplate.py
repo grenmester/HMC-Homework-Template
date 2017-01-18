@@ -185,9 +185,8 @@ begin = \
 \\renewcommand\\footrulewidth{{0.4pt}}
 
 \\begin{{document}}
-\\begin{{center}}
-    \\problemlist{{{1}: HW {2}}}
-\\end{{center}}
+
+\\problemlist{{{1}: HW {2}}}
 '''
 
 problem = \
