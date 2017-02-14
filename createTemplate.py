@@ -236,7 +236,7 @@ def main():
     # checks whether file already exists
     overwrite = 'y'
     if os.path.exists(fileName):
-        overwite = input('WARNING: This file already exists in the current directory \nOverwrite it? [y/n] ')
+        overwite = input('WARNING: This file already exists in the current directory \nOverwrite it? [y/n]: ')
 
     # create template file
     if overwrite in ['Y','y','Yes','yes']:
@@ -246,10 +246,12 @@ def main():
                 templateFile.write(problem.format(i+1))
             templateFile.write(end)
 
-            print("All done, opening your assignment!")
-            os.system("open " + templateFile.name)
+            openFile = input('All done, would you like to open your assignment? [y/n]: ')
+            if openFile in ['Y','y','Yes','yes']:
+                print('Opening your assignment!')
+                os.system('open ' + templateFile.name)
     else:
         print('Aborting...')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
