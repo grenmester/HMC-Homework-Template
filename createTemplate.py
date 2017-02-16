@@ -170,7 +170,7 @@ begin = \
 
 \\pagestyle{{fancy}}
 \\lhead{{{0}}}
-\\chead{{{1}}}
+\\chead{{{1}: HW {2}}}
 \\rhead{{{3}}}
 \\lfoot{{}}
 \\cfoot{{}}
