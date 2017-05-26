@@ -215,7 +215,7 @@ def main():
     print('Please enter the following information:')
     name = raw_input('Name: ')
     course = raw_input('Course: ')
-    assignmentNum = raw_input('Assignment Number: ')
+    assignment = raw_input('Assignment Name/Number: ')
     dueDate = raw_input('Due Date: ')
     while True:
         try:
@@ -231,22 +231,22 @@ def main():
 
     # name title
     title = course
-    if assignmentNum:
+    if assignment:
         if course:
             title += ': '
         try:
-            if int(assignmentNum):
+            if int(assignment):
                 title += 'HW '
         except:
             pass
-        title += assignmentNum
+        title += assignment
 
     # name homework file
     counter = 0
-    fileName = 'hw{0}.tex'.format(assignmentNum)
+    fileName = 'hw{0}.tex'.format(assignment)
     while os.path.exists(fileName):
         counter += 1
-        fileName = 'hw{0} ('.format(assignmentNum) + str(counter) + ').tex'
+        fileName = 'hw{0} ('.format(assignment) + str(counter) + ').tex'
 
     # create homework file
     with open(fileName,'w') as templateFile:
