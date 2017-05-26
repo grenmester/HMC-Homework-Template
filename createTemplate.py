@@ -217,10 +217,9 @@ end = \
 '''
 
 ################################################################################
-#### Main Function
+#### Helper Functions
 
-def main():
-    # query inputs
+def query_inputs():
     print('Please enter the following information:')
     name = raw_input('Name: ')
     course = raw_input('Course: ')
@@ -237,8 +236,9 @@ def main():
             break
         except ValueError:
             print('Please enter a valid number of problems')
+    return (name, course, assignment, dueDate, numProblems)
 
-    # name title
+def determine_title(course, assignment):
     title = course
     if assignment:
         if course:
@@ -249,15 +249,17 @@ def main():
         except:
             pass
         title += assignment
+    return title
 
-    # name homework file
+def determine_homework_file_name(assignment):
     counter = 0
     fileName = 'hw{0}.tex'.format(assignment)
     while os.path.exists(fileName):
         counter += 1
         fileName = 'hw{0} ('.format(assignment) + str(counter) + ').tex'
+    return fileName
 
-    # create homework file
+def create_homework_file(fileName, name, title, dueDate, numProblems):
     with open(fileName,'w') as templateFile:
         templateFile.write(begin.format(name, title, dueDate))
         for i in range(numProblems):
@@ -265,7 +267,7 @@ def main():
         templateFile.write(end)
         print('\nThe file "' + fileName + '" has been created in the current directory.')
 
-    # ask to add hmcpset.cls if not found
+def verify_hmcpset():
     if not os.path.exists('hmcpset.cls'):
         createPset = raw_input('\nYour current directory does not contain the required hmcpset.cls \nCreate hmcpset.cls? [(y)/n]: ')
         if createPset in ['Y','y','Yes','yes', '']:
@@ -273,11 +275,22 @@ def main():
                 psetFile.write(hmcpset)
                 print('\nThe file "hmcpset.cls" has been created in the current directory.')
 
-    # ask if user wants to open assignment
+def query_open_file():
     openFile = raw_input('\nAll done, would you like to open your assignment? [y/(n)]: ')
     if openFile in ['Y','y','Yes','yes']:
         print('Opening your assignment!')
         os.system('open ' + templateFile.name)
+
+################################################################################
+#### Main Function
+
+def main():
+    name, course, assignment, dueDate, numProblems = query_inputs()
+    title = determine_title(course, assignment)
+    fileName = determine_homework_file_name(assignment)
+    create_homework_file(fileName, name, title, dueDate, numProblems)
+    verify_hmcpset()
+    query_open_file()
 
 if __name__ == '__main__':
     main()
