@@ -221,7 +221,12 @@ def main():
     dueDate = raw_input('Due Date: ')
     while True:
         try:
-            numProblems = int(raw_input('Number of Problems: '))
+            numProblems = raw_input('Number of Problems: ')
+            if numProblems == "":
+                numProblems = 0
+            numProblems = int(numProblems)
+            if numProblems < 0:
+                raise ValueError
             break
         except ValueError:
             print('Please enter a valid number of problems')
