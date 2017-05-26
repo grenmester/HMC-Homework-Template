@@ -171,8 +171,8 @@ begin = \
 
 \\pagestyle{{fancy}}
 \\lhead{{{0}}}
-\\chead{{{1}: HW {2}}}
-\\rhead{{{3}}}
+\\chead{{{1}}}
+\\rhead{{{2}}}
 \\lfoot{{}}
 \\cfoot{{}}
 \\rfoot{{Page\\ \\thepage\\ of\\ \\pageref{{LastPage}}}}
@@ -187,7 +187,7 @@ begin = \
 
 \\begin{{document}}
 
-\\problemlist{{{1}: HW {2}}}
+\\problemlist{{{1}}}
 '''
 
 problem = \
@@ -229,6 +229,18 @@ def main():
         except ValueError:
             print('Please enter a valid number of problems')
 
+    # name title
+    title = course
+    if assignmentNum:
+        if course:
+            title += ': '
+        try:
+            if int(assignmentNum):
+                title += 'HW '
+        except:
+            pass
+        title += assignmentNum
+
     # name homework file
     counter = 0
     fileName = 'hw{0}.tex'.format(assignmentNum)
@@ -238,7 +250,7 @@ def main():
 
     # create homework file
     with open(fileName,'w') as templateFile:
-        templateFile.write(begin.format(name, course, assignmentNum, dueDate))
+        templateFile.write(begin.format(name, title, dueDate))
         for i in range(numProblems):
             templateFile.write(problem.format(i+1))
         templateFile.write(end)
