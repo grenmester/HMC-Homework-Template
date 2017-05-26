@@ -230,7 +230,21 @@ def main():
             break
         except ValueError:
             print('Please enter a valid number of problems')
+
+    # name homework file
+    counter = 0
     fileName = 'hw{0}.tex'.format(assignmentNum)
+    while os.path.exists(fileName):
+        counter += 1
+        fileName = 'hw{0} ('.format(assignmentNum) + str(counter) + ').tex'
+
+    # create homework file
+    with open(fileName,'w') as templateFile:
+        templateFile.write(begin.format(name, course, assignmentNum, dueDate))
+        for i in range(numProblems):
+            templateFile.write(problem.format(i+1))
+        templateFile.write(end)
+        print('The file "' + fileName + '" has been created in the current directory.')
 
     # ask to add hmcpset.cls if not found
     if not os.path.exists('hmcpset.cls'):
@@ -239,25 +253,11 @@ def main():
             with open('hmcpset.cls','w') as psetFile:
                 psetFile.write(hmcpset)
 
-    # checks whether file already exists
-    overwrite = 'y'
-    if os.path.exists(fileName):
-        overwite = raw_input('WARNING: This file already exists in the current directory \nOverwrite it? [y/n]: ')
-
-    # create template file
-    if overwrite in ['Y','y','Yes','yes']:
-        with open(fileName,'w') as templateFile:
-            templateFile.write(begin.format(name, course, assignmentNum, dueDate))
-            for i in range(numProblems):
-                templateFile.write(problem.format(i+1))
-            templateFile.write(end)
-
-            openFile = raw_input('All done, would you like to open your assignment? [y/n]: ')
-            if openFile in ['Y','y','Yes','yes']:
-                print('Opening your assignment!')
-                os.system('open ' + templateFile.name)
-    else:
-        print('Aborting...')
+    # ask if user wants to open assignment
+    openFile = raw_input('All done, would you like to open your assignment? [y/n]: ')
+    if openFile in ['Y','y','Yes','yes']:
+        print('Opening your assignment!')
+        os.system('open ' + templateFile.name)
 
 if __name__ == '__main__':
     main()
