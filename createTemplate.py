@@ -211,10 +211,8 @@ end = \
 '''
 
 def main():
-    print('Hi there, ready to start an assignment?')
-    time.sleep(.3)
-
     # query inputs
+    print('Please enter the following information:')
     name = raw_input('Name: ')
     course = raw_input('Course: ')
     assignmentNum = raw_input('Assignment Number: ')
@@ -244,17 +242,18 @@ def main():
         for i in range(numProblems):
             templateFile.write(problem.format(i+1))
         templateFile.write(end)
-        print('The file "' + fileName + '" has been created in the current directory.')
+        print('\nThe file "' + fileName + '" has been created in the current directory.')
 
     # ask to add hmcpset.cls if not found
     if not os.path.exists('hmcpset.cls'):
-        createPset = raw_input('Your current directory does not contain the required hmcpset.cls \nCreate hmcpset.cls? [y/n]: ')
-        if createPset in ['Y','y','Yes','yes']:
+        createPset = raw_input('\nYour current directory does not contain the required hmcpset.cls \nCreate hmcpset.cls? [(y)/n]: ')
+        if createPset in ['Y','y','Yes','yes', '']:
             with open('hmcpset.cls','w') as psetFile:
                 psetFile.write(hmcpset)
+                print('\nThe file "hmcpset.cls" has been created in the current directory.')
 
     # ask if user wants to open assignment
-    openFile = raw_input('All done, would you like to open your assignment? [y/n]: ')
+    openFile = raw_input('\nAll done, would you like to open your assignment? [y/(n)]: ')
     if openFile in ['Y','y','Yes','yes']:
         print('Opening your assignment!')
         os.system('open ' + templateFile.name)
