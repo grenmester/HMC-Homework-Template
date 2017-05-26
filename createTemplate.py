@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-import time, os
+import os
+
+################################################################################
+#### TeX Class File
 
 hmcpset = \
 '''
@@ -164,6 +167,9 @@ hmcpset = \
 
 '''
 
+################################################################################
+#### TeX Template Fragments
+
 begin = \
 '''\\documentclass[11pt,letterpaper,boxed]{{hmcpset}}
 \\usepackage[margin=1in,headheight=14pt]{{geometry}}
@@ -209,6 +215,9 @@ end = \
 '''
 \\end{document}
 '''
+
+################################################################################
+#### Main Function
 
 def main():
     # query inputs
