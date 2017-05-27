@@ -238,25 +238,30 @@ def query_inputs():
             print('Please enter a valid number of problems')
     return (name, course, assignment, dueDate, numProblems)
 
+def is_number(num):
+    try:
+        int(num)
+    except ValueError:
+        return False
+    return True
+
 def determine_title(course, assignment):
     title = course
     if assignment:
         if course:
             title += ': '
-        try:
-            if int(assignment):
-                title += 'HW '
-        except:
-            pass
+        if is_number(assignment):
+            title += 'HW '
         title += assignment
     return title
 
 def determine_homework_file_name(assignment):
     counter = 0
-    fileName = 'hw{0}.tex'.format(assignment)
+    fileName = 'hw{0}.tex'.format(assignment) if is_number(assignment) or assignment == '' else '{0}.tex'.format(assignment)
     while os.path.exists(fileName):
         counter += 1
-        fileName = 'hw{0} ('.format(assignment) + str(counter) + ').tex'
+        fileName = 'hw{0} ('.format(assignment) if is_number(assignment) or assignment == '' else '{0} ('.format(assignment)
+        fileName += str(counter) + ').tex'
     return fileName
 
 def create_homework_file(fileName, name, title, dueDate, numProblems):
