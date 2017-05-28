@@ -256,6 +256,7 @@ def determine_title(course, assignment):
     return title
 
 def determine_homework_file_name(assignment):
+    assignment = assignment.replace('/','')  # strip '/' characters since they can't be used in file names
     counter = 0
     fileName = 'hw{0}.tex'.format(assignment) if is_number(assignment) or assignment == '' else '{0}.tex'.format(assignment)
     while os.path.exists(fileName):
