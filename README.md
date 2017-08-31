@@ -3,9 +3,27 @@ This script creates a TeX template in the current directory that uses the Harvey
 
 ## Usage
 This script is written for Python 2.7. To use it, simply type the following into your command prompt.
-```{bash}
+```bash
 python createTemplate.py
+```
+Below is an example usage of the script.
+```
+Please enter the following information:
+Name: John Doe
+Course: MATH 30G
+Assignment Name/Number: Limits
+Due Date: 9/5
+Number of Problems: 5
+
+The file "Limits.tex" has been created in the current directory.
+
+Your current directory does not contain the required hmcpset.cls
+Create hmcpset.cls? [(y)/n]: y
+
+The file "hmcpset.cls" has been created in the current directory.
+
+All done, would you like to open your assignment? [y/(n)]: n
 ```
 
 ## Credits
-This script was created originally by [Eyassu Shimelis](https://github.com/eshimelis).
+This script was created originally by [Eyassu Shimelis](https://github.com/eshimelis) and modified by [Jacky Lee](https://github.com/grenmester).
