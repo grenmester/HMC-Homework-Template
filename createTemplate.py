@@ -220,6 +220,9 @@ end = \
 #### Helper Functions
 
 def query_inputs():
+    '''
+    Gets information about problem set
+    '''
     print('Please enter the following information:')
     name = raw_input('Name: ')
     course = raw_input('Course: ')
@@ -239,6 +242,9 @@ def query_inputs():
     return (name, course, assignment, dueDate, numProblems)
 
 def is_number(num):
+    '''
+    Determines whether parameter is a number
+    '''
     try:
         int(num)
     except ValueError:
@@ -246,6 +252,9 @@ def is_number(num):
     return True
 
 def determine_title(course, assignment):
+    '''
+    Determines the title of the problem set
+    '''
     title = course
     if assignment:
         if course:
@@ -256,6 +265,9 @@ def determine_title(course, assignment):
     return title
 
 def determine_homework_file_name(assignment):
+    '''
+    Determines the name of the file
+    '''
     assignment = assignment.replace('/','')  # strip '/' characters since they can't be used in file names
     counter = 0
     fileName = 'hw{0}.tex'.format(assignment) if is_number(assignment) or assignment == '' else '{0}.tex'.format(assignment)
@@ -266,6 +278,9 @@ def determine_homework_file_name(assignment):
     return fileName
 
 def create_homework_file(fileName, name, title, dueDate, numProblems):
+    '''
+    Creates the file in the current directory
+    '''
     with open(fileName,'w') as templateFile:
         templateFile.write(begin.format(name, title, dueDate))
         for i in range(numProblems):
@@ -274,6 +289,9 @@ def create_homework_file(fileName, name, title, dueDate, numProblems):
         print('\nThe file "' + fileName + '" has been created in the current directory.')
 
 def verify_hmcpset():
+    '''
+    Determines whether hmcpset is in the current directory and asks to add it if it is not found
+    '''
     if not os.path.exists('hmcpset.cls'):
         createPset = raw_input('\nYour current directory does not contain the required hmcpset.cls \nCreate hmcpset.cls? [(y)/n]: ')
         if createPset in ['Y','y','Yes','yes', '']:
@@ -282,6 +300,9 @@ def verify_hmcpset():
                 print('\nThe file "hmcpset.cls" has been created in the current directory.')
 
 def query_open_file():
+    '''
+    Asks user whether to open the file
+    '''
     openFile = raw_input('\nAll done, would you like to open your assignment? [y/(n)]: ')
     if openFile in ['Y','y','Yes','yes']:
         print('Opening your assignment!')
