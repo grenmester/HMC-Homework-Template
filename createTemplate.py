@@ -173,7 +173,7 @@ hmcpset = \
 begin = \
 '''\\documentclass[11pt,letterpaper,boxed]{{hmcpset}}
 \\usepackage[margin=1in,headheight=14pt]{{geometry}}
-\\usepackage{{amsfonts, amsmath, amssymb, enumerate, fancyhdr, gensymb, lastpage, mathtools}}
+\\usepackage{{amsfonts, amsmath, amssymb, enumerate, fancyhdr, gensymb, lastpage, mathtools, parskip}}
 
 \\pagestyle{{fancy}}
 \\lhead{{{0}}}
