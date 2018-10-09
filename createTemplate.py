@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import pipes
 import os
 
 ################################################################################
@@ -299,14 +300,14 @@ def verify_hmcpset():
                 psetFile.write(hmcpset)
                 print('\nThe file "hmcpset.cls" has been created in the current directory.')
 
-def query_open_file():
+def query_open_file(templateName):
     '''
     Asks user whether to open the file
     '''
     openFile = raw_input('\nAll done, would you like to open your assignment? [y/(n)]: ')
     if openFile in ['Y','y','Yes','yes']:
         print('Opening your assignment!')
-        os.system('open ' + templateFile.name)
+        os.system('open ' + pipes.quote(templateName))
 
 ################################################################################
 #### Main Function
@@ -315,9 +316,9 @@ def main():
     name, course, assignment, dueDate, numProblems = query_inputs()
     title = determine_title(course, assignment)
     fileName = determine_homework_file_name(assignment)
-    create_homework_file(fileName, name, title, dueDate, numProblems)
+    templateName = create_homework_file(fileName, name, title, dueDate, numProblems)
     verify_hmcpset()
-    query_open_file()
+    query_open_file(templateName)
 
 if __name__ == '__main__':
     main()
