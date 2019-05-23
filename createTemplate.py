@@ -6,8 +6,7 @@ import os
 ################################################################################
 #### TeX Class File
 
-hmcpset = \
-'''
+hmcpset = '''
 % HMC Math dept HW class file
 % v0.04 by Eric J. Malm, 10 Mar 2005
 %%% IDENTIFICATION --------------------------------------------------------
@@ -165,14 +164,13 @@ hmcpset = \
 \\newcommand{\\assignment}[1]{\\def\\hmcpset@assignment{#1}}
 \\newcommand{\\duedate}[1]{\\def\\hmcpset@duedate{#1}}
 \\newcommand{\\extraline}[1]{\\def\\hmcpset@extraline{#1}}
-
 '''
 
 ################################################################################
 #### TeX Template Fragments
 
-begin = \
-'''\\documentclass[11pt,letterpaper,boxed]{{hmcpset}}
+begin = '''
+\\documentclass[11pt,letterpaper,boxed]{{hmcpset}}
 \\usepackage[margin=1in,headheight=14pt]{{geometry}}
 \\usepackage{{amsfonts, amsmath, amssymb, enumerate, fancyhdr, gensymb, lastpage, mathtools, parskip}}
 
@@ -197,8 +195,7 @@ begin = \
 \\problemlist{{{1}}}
 '''
 
-problem = \
-'''
+problem = '''
 %------------------------- Problem {0} -----------------------
 
 \\begin{{problem}}[{0}]
@@ -212,18 +209,16 @@ problem = \
 \\newpage
 '''
 
-end = \
-'''
+end = '''
 \\end{document}
 '''
 
 ################################################################################
 #### Helper Functions
 
+
 def query_inputs():
-    '''
-    Gets information about problem set
-    '''
+    '''Gets information about problem set.'''
     print('Please enter the following information:')
     name = raw_input('Name: ')
     course = raw_input('Course: ')
@@ -240,22 +235,20 @@ def query_inputs():
             break
         except ValueError:
             print('Please enter a valid number of problems')
-    return (name, course, assignment, dueDate, numProblems)
+    return name, course, assignment, dueDate, numProblems
+
 
 def is_number(num):
-    '''
-    Determines whether parameter is a number
-    '''
+    '''Determines whether parameter is a number.'''
     try:
         int(num)
     except ValueError:
         return False
     return True
 
+
 def determine_title(course, assignment):
-    '''
-    Determines the title of the problem set
-    '''
+    '''Determines the title of the problem set.'''
     title = course
     if assignment:
         if course:
@@ -265,60 +258,73 @@ def determine_title(course, assignment):
         title += assignment
     return title
 
+
 def determine_homework_file_name(assignment):
-    '''
-    Determines the name of the file
-    '''
-    assignment = assignment.replace('/','')  # strip '/' characters since they can't be used in file names
+    '''Determines the name of the file.'''
+    # Strip '/' characters since they can't be used in file names.
+    assignment = assignment.replace('/', '')
     counter = 0
-    fileName = 'hw{0}.tex'.format(assignment) if is_number(assignment) or assignment == '' else '{0}.tex'.format(assignment)
+    fileName = ''
+    if is_number(assignment) or assignment == '':
+        fileName += 'hw'
+    fileName += '{0}.tex'.format(assignment)
     while os.path.exists(fileName):
         counter += 1
-        fileName = 'hw{0} ('.format(assignment) if is_number(assignment) or assignment == '' else '{0} ('.format(assignment)
-        fileName += str(counter) + ').tex'
+        fileName = ''
+        if is_number(assignment) or assignment == '':
+            fileName += 'hw'
+        fileName += '{0} ({1}).tex'.format(assignment, counter)
     return fileName
 
+
 def create_homework_file(fileName, name, title, dueDate, numProblems):
-    '''
-    Creates the file in the current directory
-    '''
-    with open(fileName,'w') as templateFile:
-        templateFile.write(begin.format(name, title, dueDate))
+    '''Creates the file in the current directory.'''
+    with open(fileName, 'w') as templateFile:
+        templateFile.write(begin.format(name, title, dueDate).lstrip())
         for i in range(numProblems):
             templateFile.write(problem.format(i+1))
         templateFile.write(end)
-        print('\nThe file "' + fileName + '" has been created in the current directory.')
+        print('\nThe file "' + fileName +
+              '" has been created in the current directory.')
+
 
 def verify_hmcpset():
     '''
-    Determines whether hmcpset is in the current directory and asks to add it if it is not found
+    Determines whether hmcpset is in the current directory and asks to add it
+    if it is not found.
     '''
     if not os.path.exists('hmcpset.cls'):
-        createPset = raw_input('\nYour current directory does not contain the required hmcpset.cls \nCreate hmcpset.cls? [(y)/n]: ')
-        if createPset in ['Y','y','Yes','yes', '']:
-            with open('hmcpset.cls','w') as psetFile:
-                psetFile.write(hmcpset)
-                print('\nThe file "hmcpset.cls" has been created in the current directory.')
+        createPset = raw_input('\nYour current directory does not have the '
+                               'required "hmcpset.cls"\nCreate "hmcpset.cls"? '
+                               '[(y)/n]: ')
+        if createPset in ['Y', 'y', 'Yes', 'yes', '']:
+            with open('hmcpset.cls', 'w') as psetFile:
+                psetFile.write(hmcpset.lstrip())
+                print('\nThe file "hmcpset.cls" has been created in the '
+                      'current directory.')
+
 
 def query_open_file(templateName):
-    '''
-    Asks user whether to open the file
-    '''
-    openFile = raw_input('\nAll done, would you like to open your assignment? [y/(n)]: ')
-    if openFile in ['Y','y','Yes','yes']:
+    '''Asks user whether to open the file.'''
+    openFile = raw_input('\nAll done, would you like to open your assignment? '
+                         '[y/(n)]: ')
+    if openFile in ['Y', 'y', 'Yes', 'yes']:
         print('Opening your assignment!')
         os.system('open ' + pipes.quote(templateName))
 
 ################################################################################
 #### Main Function
 
+
 def main():
     name, course, assignment, dueDate, numProblems = query_inputs()
     title = determine_title(course, assignment)
     fileName = determine_homework_file_name(assignment)
-    templateName = create_homework_file(fileName, name, title, dueDate, numProblems)
+    templateName = create_homework_file(
+        fileName, name, title, dueDate, numProblems)
     verify_hmcpset()
     query_open_file(templateName)
+
 
 if __name__ == '__main__':
     main()
