@@ -220,22 +220,14 @@ def query_inputs():
     click.echo('Please enter the following information:')
     name = click.prompt('Name')
     course = click.prompt('Course')
-    assignment = click.prompt('Assignment Name/Number')
+    assignment = click.prompt('Assignment Name/Number', default='hw',
+                              show_default=False)
     due_date = click.prompt('Due Date')
     # Limit maximum number of problems to 50.
     num_problems = click.prompt('Number of Problems', default=0,
-                               show_default=False,
-                               type=click.IntRange(0, 50, clamp=True))
+                                show_default=False,
+                                type=click.IntRange(0, 50, clamp=True))
     return name, course, assignment, due_date, num_problems
-
-
-def is_number(num):
-    '''Determines whether parameter is a number.'''
-    try:
-        int(num)
-    except ValueError:
-        return False
-    return True
 
 
 def determine_title(course, assignment):
@@ -244,7 +236,7 @@ def determine_title(course, assignment):
     if assignment:
         if course:
             title += ': '
-        if is_number(assignment):
+        if assignment.isdigit():
             title += 'HW '
         title += assignment
     return title
@@ -256,13 +248,13 @@ def determine_homework_file_name(assignment):
     assignment = assignment.replace('/', '')
     counter = 0
     file_name = ''
-    if is_number(assignment) or assignment == '':
+    if assignment.isdigit():
         file_name += 'hw'
     file_name += '{0}.tex'.format(assignment)
     while os.path.exists(file_name):
         counter += 1
         file_name = ''
-        if is_number(assignment) or assignment == '':
+        if assignment.isdigit():
             file_name += 'hw'
         file_name += '{0} ({1}).tex'.format(assignment, counter)
     return file_name
