@@ -169,8 +169,14 @@ hmcpset = '''
 
 begin = '''
 \\documentclass[11pt,letterpaper,boxed]{{hmcpset}}
-\\usepackage[margin=1in,headheight=14pt]{{geometry}}
-\\usepackage{{amsfonts, amsmath, amssymb, enumerate, fancyhdr, gensymb, lastpage, mathtools, parskip}}
+\\usepackage[margin=1in,headheight=14pt]{{geometry}} % set page layout
+\\usepackage{{amssymb}} % AMS symbols
+\\usepackage{{enumerate}} % enumerate environment
+\\usepackage{{fancyhdr}} % fancy header
+\\usepackage{{gensymb}} % generic symbols for text and math mode
+\\usepackage{{lastpage}} % get the page count
+\\usepackage{{mathtools}} % useful symbols and tools
+\\usepackage{{parskip}} % fix paragraph indentation
 
 \\pagestyle{{fancy}}
 \\lhead{{{0}}}
