@@ -196,7 +196,7 @@ begin = '''
 
 \\begin{{document}}
 
-\\problemlist{{{1}}}
+\\problemlist{{{3}}}
 '''
 
 problem = '''
@@ -221,7 +221,19 @@ end = '''
 #### Helper Functions
 
 
-def query_inputs():
+def determine_title(course, assignment):
+    '''Determines the title of the problem set.'''
+    title = course
+    if assignment:
+        if course:
+            title += ': '
+        if assignment.isdigit():
+            title += 'HW '
+        title += assignment
+    return title
+
+
+def query_inputs(advanced):
     '''Gets information about problem set.'''
     click.echo('Please enter the following information:')
     name = click.prompt('Name')
@@ -233,19 +245,11 @@ def query_inputs():
     num_problems = click.prompt('Number of Problems', default=0,
                                 show_default=False,
                                 type=click.IntRange(0, 50, clamp=True))
-    return name, course, assignment, due_date, num_problems
-
-
-def determine_title(course, assignment):
-    '''Determines the title of the problem set.'''
-    title = course
-    if assignment:
-        if course:
-            title += ': '
-        if assignment.isdigit():
-            title += 'HW '
-        title += assignment
-    return title
+    title = determine_title(course, assignment)
+    problem_list = click.prompt('Problem List', default=title,
+                                show_default=False) if advanced else title
+    return name, course, assignment, due_date, num_problems, title, \
+        problem_list
 
 
 def determine_homework_file_name(assignment):
@@ -266,10 +270,12 @@ def determine_homework_file_name(assignment):
     return file_name
 
 
-def create_homework_file(file_name, name, title, due_date, num_problems):
+def create_homework_file(file_name, name, title, due_date, problem_list,
+                         num_problems):
     '''Creates the file in the current directory.'''
     with click.open_file(file_name, 'w') as template_file:
-        template_file.write(begin.format(name, title, due_date).lstrip())
+        template_file.write(begin.format(
+            name, title, due_date, problem_list).lstrip())
         for i in range(1, num_problems+1):
             template_file.write(problem.format(i))
         template_file.write(end)
@@ -283,7 +289,7 @@ def verify_hmcpset():
     if it is not found.
     '''
     if not os.path.exists('hmcpset.cls'):
-        click.echo('Your current directory does not have the required ' +
+        click.echo('Your current directory does not have the required '
                    '"hmcpset.cls".')
         if click.confirm('Create "hmcpset.cls"?', default=True):
             with click.open_file('hmcpset.cls', 'w') as pset_file:
@@ -295,11 +301,18 @@ def verify_hmcpset():
 #### Main Function
 
 
-def main():
-    name, course, assignment, due_date, num_problems = query_inputs()
-    title = determine_title(course, assignment)
+@click.command()
+@click.option('-a', '--advanced', default=False, is_flag=True,
+              help='Advanced options.')
+def main(advanced):
+    '''Create a ready-to-compile tex file using the hmcpset class.'''
+    if advanced:
+        click.echo('Entering advanced mode.')
+    name, course, assignment, due_date, num_problems, title, problem_list \
+        = query_inputs(advanced)
     file_name = determine_homework_file_name(assignment)
-    create_homework_file(file_name, name, title, due_date, num_problems)
+    create_homework_file(file_name, name, title, due_date,
+                         problem_list, num_problems)
     verify_hmcpset()
 
 
