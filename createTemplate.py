@@ -221,12 +221,12 @@ def query_inputs():
     name = click.prompt('Name')
     course = click.prompt('Course')
     assignment = click.prompt('Assignment Name/Number')
-    dueDate = click.prompt('Due Date')
+    due_date = click.prompt('Due Date')
     # Limit maximum number of problems to 50.
-    numProblems = click.prompt('Number of Problems', default=0,
+    num_problems = click.prompt('Number of Problems', default=0,
                                show_default=False,
                                type=click.IntRange(0, 50, clamp=True))
-    return name, course, assignment, dueDate, numProblems
+    return name, course, assignment, due_date, num_problems
 
 
 def is_number(num):
@@ -255,27 +255,27 @@ def determine_homework_file_name(assignment):
     # Strip '/' characters since they can't be used in file names.
     assignment = assignment.replace('/', '')
     counter = 0
-    fileName = ''
+    file_name = ''
     if is_number(assignment) or assignment == '':
-        fileName += 'hw'
-    fileName += '{0}.tex'.format(assignment)
-    while os.path.exists(fileName):
+        file_name += 'hw'
+    file_name += '{0}.tex'.format(assignment)
+    while os.path.exists(file_name):
         counter += 1
-        fileName = ''
+        file_name = ''
         if is_number(assignment) or assignment == '':
-            fileName += 'hw'
-        fileName += '{0} ({1}).tex'.format(assignment, counter)
-    return fileName
+            file_name += 'hw'
+        file_name += '{0} ({1}).tex'.format(assignment, counter)
+    return file_name
 
 
-def create_homework_file(fileName, name, title, dueDate, numProblems):
+def create_homework_file(file_name, name, title, due_date, num_problems):
     '''Creates the file in the current directory.'''
-    with click.open_file(fileName, 'w') as templateFile:
-        templateFile.write(begin.format(name, title, dueDate).lstrip())
-        for i in range(1, numProblems+1):
-            templateFile.write(problem.format(i))
-        templateFile.write(end)
-        click.echo('The file "' + fileName +
+    with click.open_file(file_name, 'w') as template_file:
+        template_file.write(begin.format(name, title, due_date).lstrip())
+        for i in range(1, num_problems+1):
+            template_file.write(problem.format(i))
+        template_file.write(end)
+        click.echo('The file "' + file_name +
                    '" has been created in the current directory.')
 
 
@@ -288,8 +288,8 @@ def verify_hmcpset():
         click.echo('Your current directory does not have the required ' +
                    '"hmcpset.cls".')
         if click.confirm('Create "hmcpset.cls"?', default=True):
-            with click.open_file('hmcpset.cls', 'w') as psetFile:
-                psetFile.write(hmcpset.lstrip())
+            with click.open_file('hmcpset.cls', 'w') as pset_file:
+                pset_file.write(hmcpset.lstrip())
                 click.echo('The file "hmcpset.cls" has been created in the '
                            'current directory.')
 
@@ -298,11 +298,10 @@ def verify_hmcpset():
 
 
 def main():
-    name, course, assignment, dueDate, numProblems = query_inputs()
+    name, course, assignment, due_date, num_problems = query_inputs()
     title = determine_title(course, assignment)
-    fileName = determine_homework_file_name(assignment)
-    templateName = create_homework_file(
-        fileName, name, title, dueDate, numProblems)
+    file_name = determine_homework_file_name(assignment)
+    create_homework_file(file_name, name, title, due_date, num_problems)
     verify_hmcpset()
 
 
