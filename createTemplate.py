@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-import pipes
+import click
 import os
 
 ################################################################################
@@ -219,22 +217,15 @@ end = '''
 
 def query_inputs():
     '''Gets information about problem set.'''
-    print('Please enter the following information:')
-    name = raw_input('Name: ')
-    course = raw_input('Course: ')
-    assignment = raw_input('Assignment Name/Number: ')
-    dueDate = raw_input('Due Date: ')
-    while True:
-        try:
-            numProblems = raw_input('Number of Problems: ')
-            if numProblems == "":
-                numProblems = 0
-            numProblems = int(numProblems)
-            if numProblems < 0:
-                raise ValueError
-            break
-        except ValueError:
-            print('Please enter a valid number of problems')
+    click.echo('Please enter the following information:')
+    name = click.prompt('Name')
+    course = click.prompt('Course')
+    assignment = click.prompt('Assignment Name/Number')
+    dueDate = click.prompt('Due Date')
+    # Limit maximum number of problems to 50.
+    numProblems = click.prompt('Number of Problems', default=0,
+                               show_default=False,
+                               type=click.IntRange(0, 50, clamp=True))
     return name, course, assignment, dueDate, numProblems
 
 
@@ -279,13 +270,13 @@ def determine_homework_file_name(assignment):
 
 def create_homework_file(fileName, name, title, dueDate, numProblems):
     '''Creates the file in the current directory.'''
-    with open(fileName, 'w') as templateFile:
+    with click.open_file(fileName, 'w') as templateFile:
         templateFile.write(begin.format(name, title, dueDate).lstrip())
-        for i in range(numProblems):
-            templateFile.write(problem.format(i+1))
+        for i in range(1, numProblems+1):
+            templateFile.write(problem.format(i))
         templateFile.write(end)
-        print('\nThe file "' + fileName +
-              '" has been created in the current directory.')
+        click.echo('The file "' + fileName +
+                   '" has been created in the current directory.')
 
 
 def verify_hmcpset():
@@ -294,14 +285,13 @@ def verify_hmcpset():
     if it is not found.
     '''
     if not os.path.exists('hmcpset.cls'):
-        createPset = raw_input('\nYour current directory does not have the '
-                               'required "hmcpset.cls"\nCreate "hmcpset.cls"? '
-                               '[(y)/n]: ')
-        if createPset in ['Y', 'y', 'Yes', 'yes', '']:
-            with open('hmcpset.cls', 'w') as psetFile:
+        click.echo('Your current directory does not have the required ' +
+                   '"hmcpset.cls".')
+        if click.confirm('Create "hmcpset.cls"?', default=True):
+            with click.open_file('hmcpset.cls', 'w') as psetFile:
                 psetFile.write(hmcpset.lstrip())
-                print('\nThe file "hmcpset.cls" has been created in the '
-                      'current directory.')
+                click.echo('The file "hmcpset.cls" has been created in the '
+                           'current directory.')
 
 ################################################################################
 #### Main Function
