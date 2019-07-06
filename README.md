@@ -11,7 +11,7 @@ This script works in both Python 2 and Python 3. To use it, simply type the
 following into your command prompt.
 
 ```bash
-python createTemplate.py
+python create_template.py
 ```
 
 Below is an example usage of the script.
