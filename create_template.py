@@ -224,7 +224,7 @@ end = '''
 def determine_title(course, assignment):
     '''Determines the title of the problem set.'''
     title = course
-    if assignment:
+    if assignment and assignment is not 'hw':
         if course:
             title += ': '
         if assignment.isdigit():
